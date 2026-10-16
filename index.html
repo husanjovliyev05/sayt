@@ -1,3 +1,58 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sayt buyurtma qiling</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700;800&display=swap">
+<style>
+:root{--bg:#eef4f7;--surface:#fff;--ink:#12263a;--muted:#5a6c7d;--line:#d3e0e8;--accent:#0a74e6;--on-accent:#fff;--ok:#12805c;--err:#b3261e;--warm:#ffb703;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1a26;--surface:#162636;--ink:#e8f0f6;--muted:#9bb0c1;--line:#2a3f52;--accent:#4aa3ff;--on-accent:#06182a;--ok:#4fd1a1;--err:#ff8a80}}
+:root[data-theme="dark"]{--bg:#0e1a26;--surface:#162636;--ink:#e8f0f6;--muted:#9bb0c1;--line:#2a3f52;--accent:#4aa3ff;--on-accent:#06182a;--ok:#4fd1a1;--err:#ff8a80}
+*{box-sizing:border-box}
+html{scroll-padding-top:16px;scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Onest,system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:680px;margin:0 auto;padding:8px 16px 56px}
+h1{font-size:clamp(2.4rem,9vw,4rem);line-height:1.02;letter-spacing:-.03em;font-weight:800;margin:32px 0 16px}
+h2{font-size:1.35rem;letter-spacing:-.01em;margin:36px 0 10px}
+p{margin:0 0 14px;max-width:60ch}.muted{color:var(--muted)}
+.btn{display:inline-block;width:100%;border:0;border-radius:12px;padding:14px 22px;font:700 1.05rem Onest,system-ui,sans-serif;background:var(--accent);color:var(--on-accent);cursor:pointer;text-decoration:none;text-align:center}
+.btn:disabled{opacity:.6;cursor:wait}
+.btn:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,.card:has(input:focus-visible){outline:3px solid var(--warm);outline-offset:2px}
+.card{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:14px;margin-bottom:8px;cursor:pointer}
+.card:has(input:checked){border-color:var(--accent);box-shadow:inset 4px 0 0 var(--accent)}
+.card input{width:auto;margin-top:5px;accent-color:var(--accent)}
+.card b{display:block}.card small{color:var(--muted)}
+.card .pr{margin-left:auto;font-weight:700;white-space:nowrap}
+label.f{display:block;font-weight:500;margin:14px 0 4px}
+input[type=text],input[type=tel],textarea,select{width:100%;padding:12px;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font:inherit}
+textarea{min-height:110px;resize:vertical}
+.total{display:flex;justify-content:space-between;align-items:baseline;font-weight:800;font-size:1.3rem;margin:22px 0 14px;padding-top:14px;border-top:1.5px solid var(--line)}
+.msg{margin-top:12px;font-weight:500;min-height:1.5em}.msg.ok{color:var(--ok)}.msg.err{color:var(--err)}
+footer{text-align:center;color:var(--muted);padding:8px 16px 28px;font-size:.9rem}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<main>
+<h1>Sayt kerakmi? Buyurtma bering.</h1>
+<p>Landing sahifa, Telegram bot, Mini App yoki onlayn doʻkon. Turini tanlang, ariza qoldiring, biz Telegramʼda bogʻlanamiz.</p>
+
+<form id="f" novalidate>
+<h2>1. Nima kerak?</h2>
+<div id="services"></div>
+
+<h2>2. Qoʻshimchalar</h2>
+<div id="extras"></div>
+
+<h2>3. Siz haqingizda</h2>
+<label class="f" for="name">Ismingiz</label><input type="text" id="name" autocomplete="name">
+<label class="f" for="phone">Telefon yoki Telegram</label><input type="tel" id="phone" autocomplete="tel" placeholder="+998 90 123 45 67 yoki @username">
+<label class="f" for="when">Qachongacha tayyor boʻlsin?</label>
+<select id="when"><option>Muhim emas</option><option>1 hafta ichida</option><option>2 hafta ichida</option><option>1 oy ichida</option></select>
+<label class="f" for="desc">Nima qilish kerakligini yozing</label>
+<textarea id="desc" placeholder="Masalan: goʻzallik salonim uchun sayt, yozilish formasi va narxlar roʻyxati kerak."></textarea>
 <div class="total"><span>Taxminiy narx</span><span id="sum">0 soʻm</span></div>
 <button class="btn" id="go" type="submit">Buyurtma yuborish</button>
 <div class="msg" id="msg" role="status"></div>
