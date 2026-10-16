@@ -1,0 +1,63 @@
+<div class="total"><span>Taxminiy narx</span><span id="sum">0 soʻm</span></div>
+<button class="btn" id="go" type="submit">Buyurtma yuborish</button>
+<div class="msg" id="msg" role="status"></div>
+<p class="muted">Yakuniy narx ish hajmiga qarab kelishiladi.</p>
+</form>
+</main>
+<footer>Buyurtmalar Telegramʼga tushadi</footer>
+
+<script>
+// Sozlamalar: oʻzingiznikini qoʻying
+var CONFIG = { SCRIPT_URL: "" };
+
+var SERVICES = [
+  {id:"landing", name:"Landing sahifa", note:"Bitta sahifali tanishtiruv sayti", price:300000},
+  {id:"bot", name:"Telegram bot", note:"Buyruqlar, tugmalar, arizalar qabul qilish", price:500000},
+  {id:"mini", name:"Telegram Mini App", note:"Telegram ichida ochiladigan ilova", price:800000},
+  {id:"shop", name:"Onlayn doʻkon", note:"Mahsulotlar, savat, buyurtmalar", price:1200000}
+];
+var EXTRAS = [
+  {id:"mobile", name:"Telefonga moslashgan dizayn", price:0, on:true},
+  {id:"sheets", name:"Buyurtmalarni Google Sheetsʼga yozish", price:100000},
+  {id:"admin", name:"Boshqaruv paneli", price:250000},
+  {id:"domain", name:"Domen va joylashtirishda yordam", price:80000}
+];
+var fmt = function(n){ return n.toLocaleString("ru-RU").replace(/\u00a0/g," ") + " soʻm"; };
+
+function card(type, o, i){
+  return '<label class="card"><input type="' + type + '" name="' + (type==="radio"?"svc":"ex") + '" value="' + o.id + '"' +
+    ((type==="radio"&&i===0)||o.on?" checked":"") + '><span><b>' + o.name + '</b>' + (o.note?'<small>'+o.note+'</small>':'') +
+    '</span><span class="pr">' + (o.price?fmt(o.price):"bepul") + '</span></label>';
+}
+document.getElementById("services").innerHTML = SERVICES.map(function(s,i){return card("radio",s,i);}).join("");
+document.getElementById("extras").innerHTML = EXTRAS.map(function(x){return card("checkbox",x,-1);}).join("");
+
+function pick(){
+  var s = SERVICES.filter(function(x){ return document.querySelector('input[name=svc][value='+x.id+']').checked; })[0];
+  var ex = EXTRAS.filter(function(x){ return document.querySelector('input[name=ex][value='+x.id+']').checked; });
+  return {service:s, extras:ex, total:s.price + ex.reduce(function(t,x){return t+x.price;},0)};
+}
+function recalc(){ document.getElementById("sum").textContent = fmt(pick().total); }
+document.getElementById("f").addEventListener("change", recalc); recalc();
+
+function show(t, ok){ var m = document.getElementById("msg"); m.textContent = t; m.className = "msg " + (ok?"ok":"err"); }
+
+document.getElementById("f").addEventListener("submit", function(e){
+  e.preventDefault();
+  var name = document.getElementById("name").value.trim(), phone = document.getElementById("phone").value.trim(),
+      desc = document.getElementById("desc").value.trim(), when = document.getElementById("when").value;
+  if(!name) return show("Ismingizni yozing.", false);
+  if(phone.length < 5) return show("Telefon raqami yoki Telegram nomingizni yozing.", false);
+  if(!CONFIG.SCRIPT_URL) return show("Yuborib boʻlmadi: sayt hali botga ulanmagan (SCRIPT_URL kiritilmagan).", false);
+  var p = pick(), btn = document.getElementById("go");
+  btn.disabled = true; btn.textContent = "Yuborilmoqda…";
+  fetch(CONFIG.SCRIPT_URL, {method:"POST", mode:"no-cors", headers:{"Content-Type":"text/plain"},
+    body:JSON.stringify({type:"order", name:name, phone:phone, when:when, desc:desc,
+      service:p.service.name, extras:p.extras.map(function(x){return x.name;}), total:p.total})})
+  .then(function(){ show("Buyurtma yuborildi. Tez orada bogʻlanamiz.", true); e.target.reset(); recalc(); })
+  .catch(function(){ show("Yuborib boʻlmadi. Internetni tekshirib, qayta urinib koʻring.", false); })
+  .then(function(){ btn.disabled = false; btn.textContent = "Buyurtma yuborish"; });
+});
+</script>
+</body>
+</html>
